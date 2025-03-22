@@ -51,7 +51,7 @@ fun SignUpScreen (
         )
 
         OutlinedTextField(
-            modifier = Modifier.padding(top = 120.dp),
+            modifier = Modifier.padding(top = 100.dp),
             value = viewModel.login,
             onValueChange = viewModel::updateLogin,
             leadingIcon = {
@@ -92,7 +92,7 @@ fun SignUpScreen (
             modifier = Modifier.padding(top = 10.dp),
             visualTransformation = PasswordVisualTransformation(),
             placeholder = {
-                Text(text = stringResource(id = R.string.enter_password))
+                Text(text = stringResource(id = R.string.number_iphone))
             }
         )
 
@@ -108,7 +108,23 @@ fun SignUpScreen (
             modifier = Modifier.padding(top = 10.dp),
             visualTransformation = PasswordVisualTransformation(),
             placeholder = {
-                Text(text = stringResource(id = R.string.apply_password))
+                Text(text = stringResource(id = R.string.apply_age))
+            }
+        )
+
+        OutlinedTextField(
+            value = viewModel.password,
+            onValueChange = viewModel::updatePassword,
+            leadingIcon = {
+                Icon(
+                    painter = rememberVectorPainter(image = Icons.Outlined.Lock),
+                    contentDescription = null
+                )
+            },
+            modifier = Modifier.padding(top = 10.dp),
+            visualTransformation = PasswordVisualTransformation(),
+            placeholder = {
+                Text(text = stringResource(id = R.string.enter_password))
             }
         )
 

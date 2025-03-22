@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -29,12 +27,29 @@ import androidx.navigation.NavHostController
 import com.example.garage52develop.Presentation.Navigation.NavigationRoutes
 import com.example.garage52develop.Presentation.Screens.Components.ButtonNavigation
 import com.example.garage52develop.R
+import com.example.garage52develop.Domain.State.ResultState
+import kotlin.math.sign
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun SignInScreen (
     navHostController: NavHostController,
     viewModel: SignInViewModel = viewModel()
 ) {
+
+    //val resultState by viewModel.resultState.collectAsState()
+    //val uiState = viewModel.uiState
+    val uistate = viewModel{SignInViewModel()}
+    val state = uistate.uiState
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -46,11 +61,13 @@ fun SignInScreen (
             painter = painterResource(id = R.drawable.garage52),
             contentDescription = "Logo"
         )
+        val message = remember{mutableStateOf("Hello")}
 
         OutlinedTextField(
             modifier = Modifier.padding(top = 220.dp),
-            value = viewModel.email,
-            onValueChange = viewModel::updateEmail,
+            value = state.email,
+            onValueChange = {uistate.updateState(state.copy(email = it))},
+            textStyle = TextStyle(fontSize =  30.sp),
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Email),
@@ -58,13 +75,13 @@ fun SignInScreen (
                 )
             },
             placeholder = {
-                Text(text = stringResource(id = R.string.enter_email))
+                Text(text = stringResource(R.string.enter_email))
             }
         )
 
         OutlinedTextField(
-            value = viewModel.password,
-            onValueChange = viewModel::updatePassword,
+            value = state.password,
+            onValueChange = {uistate.updateState(state.copy(password = it))},
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Lock),
@@ -78,7 +95,7 @@ fun SignInScreen (
             }
         )
 
-        ButtonNavigation(onClick = {},
+        ButtonNavigation(onClick = {uistate.signIn(navHostController, context)},
             modifier = Modifier.padding(top = 50.dp)
             ) {
             Text(

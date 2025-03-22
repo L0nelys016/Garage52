@@ -8,5 +8,6 @@
     <string name="Registration">Регистрация</string>
     <string name="no_account_register">Все еще нет аккаунта? Зарегистрируйтесь</string>
     <string name="yes_account_register">Уже есть аккаунт? Войти</string>
-    <string name="apply_password">Подтвердите пароль</string>
+    <string name="apply_age">Укажите возраст</string>
+    <string name="number_iphone">Укажите номер телефона</string>
 </resources>
