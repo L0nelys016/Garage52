@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.Phone
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.modifier.modifierLocalOf
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -30,6 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.garage52develop.Presentation.Navigation.NavigationRoutes
 import com.example.garage52develop.Presentation.Screens.Components.ButtonNavigation
+import com.example.garage52develop.Presentation.Screens.SigInScreen.SignInViewModel
 import com.example.garage52develop.Presentation.Screens.SignUpScreen.SignUpViewModel
 import com.example.garage52develop.R
 
@@ -38,6 +41,10 @@ fun SignUpScreen (
     navHostController: NavHostController,
     viewModel: SignUpViewModel = viewModel()
 ) {
+    val uistate = viewModel{ SignUpViewModel() }
+    val state = uistate.uistate
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -52,8 +59,8 @@ fun SignUpScreen (
 
         OutlinedTextField(
             modifier = Modifier.padding(top = 100.dp),
-            value = viewModel.login,
-            onValueChange = viewModel::updateLogin,
+            value = state.login,
+            onValueChange = {uistate.updateState(state.copy(login = it))},
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Person),
@@ -67,8 +74,8 @@ fun SignUpScreen (
 
         OutlinedTextField(
             modifier = Modifier.padding(top = 10.dp),
-            value = viewModel.email,
-            onValueChange = viewModel::updateEmail,
+            value = state.email,
+            onValueChange = {uistate.updateState(state.copy(email = it))},
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Email),
@@ -81,40 +88,38 @@ fun SignUpScreen (
         )
 
         OutlinedTextField(
-            value = viewModel.password,
-            onValueChange = viewModel::updatePassword,
+            value = state.phoneNumber,
+            onValueChange = {uistate.updateState(state.copy(phoneNumber = it))},
             leadingIcon = {
                 Icon(
-                    painter = rememberVectorPainter(image = Icons.Outlined.Lock),
+                    painter = rememberVectorPainter(image = Icons.Outlined.Phone),
                     contentDescription = null
                 )
             },
             modifier = Modifier.padding(top = 10.dp),
-            visualTransformation = PasswordVisualTransformation(),
             placeholder = {
                 Text(text = stringResource(id = R.string.number_iphone))
             }
         )
 
         OutlinedTextField(
-            value = viewModel.password,
-            onValueChange = viewModel::updatePassword,
+            value = state.age,
+            onValueChange = {uistate.updateState(state.copy(age = it))},
             leadingIcon = {
                 Icon(
-                    painter = rememberVectorPainter(image = Icons.Outlined.Lock),
+                    painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
                     contentDescription = null
                 )
             },
             modifier = Modifier.padding(top = 10.dp),
-            visualTransformation = PasswordVisualTransformation(),
             placeholder = {
                 Text(text = stringResource(id = R.string.apply_age))
             }
         )
 
         OutlinedTextField(
-            value = viewModel.password,
-            onValueChange = viewModel::updatePassword,
+            value = state.password,
+            onValueChange = {uistate.updateState(state.copy(password = it))},
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Lock),
@@ -128,7 +133,7 @@ fun SignUpScreen (
             }
         )
 
-        ButtonNavigation(onClick = {},
+        ButtonNavigation(onClick = {uistate.SignUp(navHostController, context)},
             modifier = Modifier.padding(top = 50.dp)
         ) {
             Text(

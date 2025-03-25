@@ -2,7 +2,6 @@ package com.example.garage52develop.Presentation.Screens.SigInScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -14,9 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -27,10 +24,6 @@ import androidx.navigation.NavHostController
 import com.example.garage52develop.Presentation.Navigation.NavigationRoutes
 import com.example.garage52develop.Presentation.Screens.Components.ButtonNavigation
 import com.example.garage52develop.R
-import com.example.garage52develop.Domain.State.ResultState
-import kotlin.math.sign
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.runtime.mutableStateOf
@@ -44,10 +37,8 @@ fun SignInScreen (
     viewModel: SignInViewModel = viewModel()
 ) {
 
-    //val resultState by viewModel.resultState.collectAsState()
-    //val uiState = viewModel.uiState
     val uistate = viewModel{SignInViewModel()}
-    val state = uistate.uiState
+    val state = uistate.uistate
     val context = LocalContext.current
 
     Column(
@@ -95,7 +86,7 @@ fun SignInScreen (
             }
         )
 
-        ButtonNavigation(onClick = {uistate.signIn(navHostController, context)},
+        ButtonNavigation(onClick = {uistate.SignIn(navHostController, context)},
             modifier = Modifier.padding(top = 50.dp)
             ) {
             Text(

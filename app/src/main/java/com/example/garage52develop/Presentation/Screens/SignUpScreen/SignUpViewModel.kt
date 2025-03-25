@@ -1,29 +1,108 @@
 package com.example.garage52develop.Presentation.Screens.SignUpScreen
 
+import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavHostController
+import com.example.garage52develop.Domain.models.Profile
+import com.example.garage52develop.Domain.Constant
+import com.example.garage52develop.Domain.State.SignUpState
+import com.example.garage52develop.Domain.Utils.isAgeValid
+import com.example.garage52develop.Domain.Utils.isEmailValid
+import com.example.garage52develop.Domain.Utils.isPasswordValid
+import com.example.garage52develop.Domain.Utils.isPhoneNumberValid
+import com.example.garage52develop.Presentation.Navigation.NavigationRoutes
+import io.github.jan.supabase.auth.auth
+import io.github.jan.supabase.auth.providers.builtin.Email
+import io.github.jan.supabase.postgrest.from
+import kotlinx.coroutines.launch
 
-class SignUpViewModel: ViewModel() {
-    var email by mutableStateOf("")
-        private set
+class SignUpViewModel : ViewModel() {
 
-    var password by mutableStateOf("")
-        private set
+    private val _state = mutableStateOf(SignUpState())
+    val uistate: SignUpState get() = _state.value
 
-    var login by mutableStateOf("")
-        private set
-
-    fun updateLogin(login: String) {
-        this.login = login
+    fun updateState(newState: SignUpState) {
+        _state.value = newState
     }
 
-    fun updateEmail(email: String) {
-        this.email = email
-    }
+    fun SignUp(controller: NavHostController, context: Context) {
+        viewModelScope.launch {
+            try {
+                if (uistate.password.isEmpty() &&
+                    uistate.email.isEmpty() &&
+                    uistate.phoneNumber.isEmpty() &&
+                    uistate.age.isEmpty() &&
+                    uistate.login.isEmpty()
+                ) {
+                    Toast.makeText(context, "Поля пустые", Toast.LENGTH_LONG).show()
+                } else {
+                    if (!uistate.email.isEmailValid()) {
+                        Toast.makeText(
+                            context,
+                            "Email не соответствует паттерну",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } else {
+                        if (!uistate.password.isPasswordValid()) {
+                            Toast.makeText(
+                                context,
+                                "В пароле используйте строчные, загл. буквы, цифры и спец. символы",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            if (!uistate.phoneNumber.isPhoneNumberValid()) {
+                                Toast.makeText(
+                                    context,
+                                    "Phone не соответствует паттерну",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                if (!uistate.age.isAgeValid()) {
+                                    Toast.makeText(
+                                        context,
+                                        "Age не соответствует паттерну",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                else{
 
-    fun updatePassword(password: String) {
-        this.password = password
+                                    Constant.supabase.auth.signUpWith(Email) {
+                                        email = uistate.email
+                                        password = uistate.password
+                                    }
+                                    controller.navigate(NavigationRoutes.SIGNIN)
+                                    val iduser = Constant.supabase.auth.currentUserOrNull()
+                                    if (iduser != null) {
+                                        Constant.supabase.from("profile").insert(
+                                            Profile(
+                                                email = uistate.email,
+                                                name = uistate.login,
+                                                age = uistate.age,
+                                                number_iphone = uistate.phoneNumber,
+                                                image = null,
+                                                id = iduser.id
+                                            )
+                                        )
+
+
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.d("Не удалось зарегистрироваться", e.message.toString())
+            }
+
+        }
     }
 }

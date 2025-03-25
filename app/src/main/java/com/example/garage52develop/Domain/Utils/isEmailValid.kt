@@ -1,4 +1,4 @@
-package com.example.supabasesimpleproject.Domain.Utils
+package com.example.garage52develop.Domain.Utils
 
 import android.text.TextUtils
 
