@@ -58,7 +58,6 @@ fun SignInScreen (
             modifier = Modifier.padding(top = 220.dp),
             value = state.email,
             onValueChange = {uistate.updateState(state.copy(email = it))},
-            textStyle = TextStyle(fontSize =  30.sp),
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Email),

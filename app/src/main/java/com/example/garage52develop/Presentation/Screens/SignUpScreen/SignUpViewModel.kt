@@ -3,16 +3,13 @@ package com.example.garage52develop.Presentation.Screens.SignUpScreen
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.runtime.getValue
 import androidx.lifecycle.ViewModel
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
 import com.example.garage52develop.Domain.models.Profile
 import com.example.garage52develop.Domain.Constant
 import com.example.garage52develop.Domain.State.SignUpState
-import com.example.garage52develop.Domain.Utils.isAgeValid
 import com.example.garage52develop.Domain.Utils.isEmailValid
 import com.example.garage52develop.Domain.Utils.isPasswordValid
 import com.example.garage52develop.Domain.Utils.isPhoneNumberValid
@@ -31,7 +28,7 @@ class SignUpViewModel : ViewModel() {
         _state.value = newState
     }
 
-    fun SignUp(controller: NavHostController, context: Context) {
+    fun signUp(controller: NavHostController, context: Context) {
         viewModelScope.launch {
             try {
                 if (uistate.password.isEmpty() &&
@@ -45,60 +42,50 @@ class SignUpViewModel : ViewModel() {
                     if (!uistate.email.isEmailValid()) {
                         Toast.makeText(
                             context,
-                            "Email не соответствует паттерну",
+                            "Email не соответствует",
                             Toast.LENGTH_LONG
                         ).show()
                     } else {
                         if (!uistate.password.isPasswordValid()) {
                             Toast.makeText(
                                 context,
-                                "В пароле используйте строчные, загл. буквы, цифры и спец. символы",
+                                "В пароле должны быть заглавные буквы, строчные, спец. символы и цифры",
                                 Toast.LENGTH_LONG
                             ).show()
                         } else {
                             if (!uistate.phoneNumber.isPhoneNumberValid()) {
                                 Toast.makeText(
                                     context,
-                                    "Phone не соответствует паттерну",
+                                    "Номер телефона не соответствует",
                                     Toast.LENGTH_LONG
                                 ).show()
                             } else {
-                                if (!uistate.age.isAgeValid()) {
-                                    Toast.makeText(
-                                        context,
-                                        "Age не соответствует паттерну",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+
+                                Constant.supabase.auth.signUpWith(Email) {
+                                    email = uistate.email
+                                    password = uistate.password
                                 }
-                                else{
 
-                                    Constant.supabase.auth.signUpWith(Email) {
-                                        email = uistate.email
-                                        password = uistate.password
-                                    }
-                                    controller.navigate(NavigationRoutes.SIGNIN)
-                                    val iduser = Constant.supabase.auth.currentUserOrNull()
-                                    if (iduser != null) {
-                                        Constant.supabase.from("profile").insert(
-                                            Profile(
-                                                email = uistate.email,
-                                                name = uistate.login,
-                                                age = uistate.age,
-                                                number_iphone = uistate.phoneNumber,
-                                                image = null,
-                                                id = iduser.id
-                                            )
+                                controller.navigate(NavigationRoutes.SIGNIN)
+                                val iduser = Constant.supabase.auth.currentUserOrNull()
+                                if (iduser != null) {
+                                    Constant.supabase.from("profile").insert(
+                                        Profile(
+                                            id = iduser.id,
+                                            email = uistate.email,
+                                            name = uistate.login,
+                                            age = uistate.age,
+                                            numberIphone = uistate.phoneNumber,
+                                            image = null,
                                         )
+                                    )
 
 
-                                    }
                                 }
                             }
                         }
-
                     }
                 }
-
             } catch (e: Exception) {
                 Log.d("Не удалось зарегистрироваться", e.message.toString())
             }

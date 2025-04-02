@@ -2,7 +2,6 @@ package com.example.garage52develop.Presentation.Screens.SignUpScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,9 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.modifier.modifierLocalOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,17 +29,15 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.garage52develop.Presentation.Navigation.NavigationRoutes
 import com.example.garage52develop.Presentation.Screens.Components.ButtonNavigation
-import com.example.garage52develop.Presentation.Screens.SigInScreen.SignInViewModel
-import com.example.garage52develop.Presentation.Screens.SignUpScreen.SignUpViewModel
 import com.example.garage52develop.R
 
 @Composable
-fun SignUpScreen (
-    navHostController: NavHostController,
-    viewModel: SignUpViewModel = viewModel()
+fun SignUpScreen(
+    navHostController: NavHostController
 ) {
-    val uistate = viewModel{ SignUpViewModel() }
-    val state = uistate.uistate
+
+    val vs = viewModel { SignUpViewModel() }
+    val state = vs.uistate
     val context = LocalContext.current
 
     Column(
@@ -51,8 +46,8 @@ fun SignUpScreen (
     ) {
         Image(
             modifier = Modifier
-                .size(285.dp)
-                .padding(top = 170.dp),
+                .size(250.dp)
+                .padding(top = 120.dp),
             painter = painterResource(id = R.drawable.garage52),
             contentDescription = "Logo"
         )
@@ -60,7 +55,7 @@ fun SignUpScreen (
         OutlinedTextField(
             modifier = Modifier.padding(top = 100.dp),
             value = state.login,
-            onValueChange = {uistate.updateState(state.copy(login = it))},
+            onValueChange = { vs.updateState(state.copy(login = it)) },
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Person),
@@ -75,7 +70,7 @@ fun SignUpScreen (
         OutlinedTextField(
             modifier = Modifier.padding(top = 10.dp),
             value = state.email,
-            onValueChange = {uistate.updateState(state.copy(email = it))},
+            onValueChange = { vs.updateState(state.copy(email = it)) },
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Email),
@@ -89,7 +84,7 @@ fun SignUpScreen (
 
         OutlinedTextField(
             value = state.phoneNumber,
-            onValueChange = {uistate.updateState(state.copy(phoneNumber = it))},
+            onValueChange = { vs.updateState(state.copy(phoneNumber = it)) },
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Phone),
@@ -104,7 +99,7 @@ fun SignUpScreen (
 
         OutlinedTextField(
             value = state.age,
-            onValueChange = {uistate.updateState(state.copy(age = it))},
+            onValueChange = { vs.updateState(state.copy(age = it)) },
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.AccountCircle),
@@ -119,7 +114,7 @@ fun SignUpScreen (
 
         OutlinedTextField(
             value = state.password,
-            onValueChange = {uistate.updateState(state.copy(password = it))},
+            onValueChange = { vs.updateState(state.copy(password = it)) },
             leadingIcon = {
                 Icon(
                     painter = rememberVectorPainter(image = Icons.Outlined.Lock),
@@ -133,7 +128,8 @@ fun SignUpScreen (
             }
         )
 
-        ButtonNavigation(onClick = {uistate.SignUp(navHostController, context)},
+        ButtonNavigation(
+            onClick = { vs.signUp(navHostController, context) },
             modifier = Modifier.padding(top = 50.dp)
         ) {
             Text(
