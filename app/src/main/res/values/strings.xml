@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Garage52</string>
+
+    <string name="enter_email">Введите email</string>
+    <string name="enter_password">Введите пароль</string>
+    <string name="enter_login_user">Введите имя пользователя</string>
+    <string name="login">Войти</string>
+    <string name="Registration">Регистрация</string>
+    <string name="no_account_register">Нет аккаунта? Зарегистрируйтесь</string>
+    <string name="yes_account_register">Уже есть аккаунт? Войти</string>
+    <string name="apply_age">Укажите возраст</string>
+    <string name="number_iphone">Укажите номер телефона</string>
+</resources>
